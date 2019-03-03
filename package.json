@@ -1,0 +1,13 @@
+{
+  "name": "cljs-code-splitting",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "^2.8.14"
+  },
+  "dependencies": {
+    "create-react-class": "^15.6.3",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3"
+  }
+}
