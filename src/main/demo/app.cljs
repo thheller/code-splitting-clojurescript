@@ -48,7 +48,7 @@
         [:> sign-in {}]
 
         :sign-up
-        [:> sign-up {}]
+        [:> sign-up {:x "foo"}]
 
         :account-overview
         [:> account-overview {}]
