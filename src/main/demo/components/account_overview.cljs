@@ -1,7 +1,7 @@
 (ns demo.components.account-overview
   (:require [demo.env :as env]))
 
-(defn root []
+(defn root {:lazy-loadable "account-overview"} []
   [:div
    [:h1 "Account Overview"]
 

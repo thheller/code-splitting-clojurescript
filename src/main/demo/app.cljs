@@ -2,16 +2,11 @@
   (:require
     ["react" :as react]
     [reagent.core :as r]
+    [reagent.dom :as rd]
     [demo.env :as env]
-    [demo.util :refer (lazy-component)]))
+    [demo.util :refer (lazy)]))
 
 (defonce root-el (js/document.getElementById "root"))
-
-(def product-detail (lazy-component demo.components.product-detail/root))
-(def product-listing (lazy-component demo.components.product-listing/root))
-(def sign-in (lazy-component demo.components.sign-in/root))
-(def sign-up (lazy-component demo.components.sign-up/root))
-(def account-overview (lazy-component demo.components.account-overview/root))
 
 (defn welcome []
   [:h1 "Welcome to my Shop!"])
@@ -39,19 +34,19 @@
      [:> react/Suspense {:fallback (r/as-element [:div "Loading ..."])}
       (case page
         :product-listing
-        [:> product-listing]
+        [:> (lazy "product-listing") {}]
 
         :product-detail
-        [:> product-detail {}]
+        [:> (lazy "product-detail") {}]
 
         :sign-in
-        [:> sign-in {}]
+        [:> (lazy "sign-in") {}]
 
         :sign-up
-        [:> sign-up {:x "foo"}]
+        [:> (lazy "sign-up") {}]
 
         :account-overview
-        [:> account-overview {}]
+        [:> (lazy "account-overview") {}]
 
         :welcome
         [welcome {}]
@@ -60,7 +55,7 @@
         )]]))
 
 (defn ^:dev/after-load start []
-  (r/render [root] root-el))
+  (rd/render [root] root-el))
 
 (defn init []
   (start))

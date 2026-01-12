@@ -1,7 +1,7 @@
 (ns demo.components.sign-in
   (:require [demo.env :as env]))
 
-(defn root []
+(defn root {:lazy-loadable "sign-in"} []
   [:div
    [:h1 "Sign In"]
    [:p "imagine a form ..."]

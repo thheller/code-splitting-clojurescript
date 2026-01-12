@@ -1,7 +1,8 @@
 (ns demo.components.product-listing
-  (:require [demo.env :as env]))
+  (:require
+    [demo.env :as env]))
 
-(defn root []
+(defn root {:lazy-loadable "product-listing"} []
   [:div
    [:h1 "Product Listing"]
 

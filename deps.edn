@@ -1,0 +1,25 @@
+{:paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :deps
+ {reagent/reagent {:mvn/version "2.0.1"}}
+
+ :aliases
+ {:dev
+  {:extra-deps
+   {thheller/shadow-cljs {:mvn/version "3.3.4"}}}
+
+  :start
+  {:main-opts ["-m" "repl"]
+
+   ;; Java24 is rather loud about libraries using some stuff they aren't supposed to
+   ;; will have to wait for the libs to fix those, until then shut them up
+   :jvm-opts
+   ["--sun-misc-unsafe-memory-access=allow"
+    "--enable-native-access=ALL-UNNAMED"]}
+
+  :release
+  {:main-opts ["-m" "shadow.cljs.devtools.cli" "run" "build/all"]}
+  }}

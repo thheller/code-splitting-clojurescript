@@ -1,29 +1,36 @@
 (ns demo.util
-  (:require-macros [demo.util])
   (:require
     ["react" :as react]
     [reagent.core :as r]
-    [shadow.lazy :as lazy]))
+    [shadow.esm :as esm]))
 
-;; the lazy-component macro will emit a simple
+(def cache #js {})
 
-;; (demo.util/lazy-component* (shadow.lazy/loadable some.qualified/symbol))
+(defn lazy [loadable]
+  (or (unchecked-get cache loadable)
+      (let [lazy
+            (react/lazy
+              (fn []
+                (-> (esm/load-by-name loadable)
+                    (.then (fn [loaded]
+                             ;; React.lazy expects to load a ES6 module with a React Component as default export
 
-;; you don't actually need this wrapper macro, I just wanted the code to be extra
-;; short for demo purposes.
+                             ;; this would be more correct in production settings
+                             ;; #js {:default (r/reactify-component (loaded))}
 
-(defn lazy-component* [loadable]
-  (react/lazy
-    (fn []
-      (-> (lazy/load loadable)
-          (.then (fn [root-el]
-                   ;; React.lazy expects to load a ES6 module with a React Component as default export
+                             ;; we need wrap the loaded component one extra level so live-reload actually works
+                             ;; since React will keep a reference to the initially loaded fn and won't update it
+                             #js {:default (r/reactify-component
+                                             (fn [props]
+                                               ;; loaded is a fn used to get the current version of whatever was loaded
+                                               ;; it uses and extra wrapper so that the reference can be replaced
+                                               ;; via hot-reload or the REPL
+                                               (let [current (loaded)]
+                                                 (current props))))}
+                             )))))]
 
-                   ;; this would be more correct in production settings
-                   ;; #js {:default (r/reactify-component root-el)}
-
-                   ;; we need wrap the loaded component one extra level so live-reload actually works
-                   ;; since React will keep a reference to the initially loaded fn and won't update it
-                   #js {:default (r/reactify-component (fn [props] [@loadable props]))}
-                   ))))))
+        ;; placing things in the cache so we always return the same lazy instance
+        ;; allows using this directly in [:> (lazy "thing") ...] instead of having a top level (def ...)
+        (unchecked-set cache loadable lazy)
+        lazy)))
 

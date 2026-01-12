@@ -1,19 +1,12 @@
 ;; shadow-cljs configuration
-{:source-paths
- ["src/dev"
-  "src/main"
-  "src/test"]
+{:deps {:aliases [:dev]}
 
- :dependencies
- [[reagent "0.8.1"]]
-
- :dev-http {8000 "public"}
+ :dev-http {8005 "public"}
 
  :builds
  {:app
-  {:target :browser
-   :asset-path "js"
-   :module-loader true
+  {:target :esm
+   :output-dir "public/js"
    :modules
    {:main
     {:init-fn demo.app/init}
@@ -22,13 +15,13 @@
     {:entries [demo.components.account-overview]
      :depends-on #{:main}}
 
-    :product-detail
-    {:entries [demo.components.product-detail]
-     :depends-on #{:main}}
-
     :product-listing
     {:entries [demo.components.product-listing]
      :depends-on #{:main}}
+
+    :product-detail
+    {:entries [demo.components.product-detail]
+     :depends-on #{:product-listing}}
 
     :sign-in
     {:entries [demo.components.sign-in]
@@ -37,7 +30,4 @@
     :sign-up
     {:entries [demo.components.sign-up]
      :depends-on #{:main}}}
-
-   ;; reduce number of requests to make devtools request log less noisy, optional
-   :devtools {:loader-mode :eval}
    }}}
